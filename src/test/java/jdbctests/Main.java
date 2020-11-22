@@ -14,12 +14,25 @@ public class Main {
         // create statement object
         Statement statement = connection.createStatement();
         //run query and get the result in resultset object.
-        ResultSet resultSet = statement.executeQuery("select* from regions");
+        ResultSet resultSet = statement.executeQuery("select* from departments");
 
         //move pinter to first row
-        resultSet.next();
+//        resultSet.next();
+//
+//        System.out.println(resultSet.getString(1)+"-"+ resultSet.getString(2));
+//
+//        resultSet.next();
+//        System.out.println(resultSet.getString(1)+"-"+ resultSet.getString("region_name"));
+//
+//        resultSet.next();
+//        System.out.println(resultSet.getString(1)+"-"+ resultSet.getString("region_name"));
 
-        System.out.println(resultSet.getString("region_name"));
+
+        while(resultSet.next()){
+            System.out.println(resultSet.getInt(1)+"-"+ resultSet.getString(2)+" - "+resultSet.getInt(3)+" - "+resultSet.getInt(4));
+        }
+
+
 
 
 
