@@ -6,6 +6,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import utilities.ConfigurationReader;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +23,7 @@ public class HW {
     public void beforeclass(){
         baseURI = ConfigurationReader.get("hr_api_url");
     }
-    @Test
+
     /*
     Given accept type is Json
     Path param value- US
@@ -31,6 +34,7 @@ public class HW {
     And Country_name is United States of America
     And Region_id is 2
     */
+    @Test
     public void Q1(){
         Response response = given().accept(ContentType.JSON)
                 .and().pathParam("country","US")
@@ -100,10 +104,60 @@ public class HW {
 //        System.out.println(o);
 
     }
+
+    /*
+            Q3:
+            Given accept type is Json
+            Query param value q= region_id 3
+            When users sends request to /countries
+            Then status code is 200
+            And all regions_id is 3
+            And count is 6
+            And hasMore is false
+            And Country_name are;
+            Australia,China,India,Japan,Malaysia,Singapore
+    */
     @Test
     public void QA3(){
 
-        given().accept(ContentType.JSON)
-                .and().queryParam("q","");
+        Response response = given().accept(ContentType.JSON)
+                .and().queryParam("q", "{\"region_id\":3}")
+                .when().get("countries");
+
+        JsonPath jsonPath = response.jsonPath();
+
+        //verify status code
+        assertEquals(response.statusCode(),200);
+
+        //verify all region_ids is 3
+        List<Integer> regionids=response.path("items.region_id");
+        for (int regionid : regionids) {
+            System.out.println(regionid);
+            assertEquals(regionid,3);
+
+        }
+        //verify count is 6
+
+        int count = jsonPath.getInt("count");
+        assertEquals(count,6);
+
+        //verify hasMore
+        Object hasMore = response.path("hasMore");
+        assertEquals(hasMore,false);
+
+        //List<String> expectedNames = Arrays.asList("Australia, China, India, Japan, Malaysia, Singapore");
+        List<String> expectedNames= new ArrayList<>();
+        expectedNames.add("Australia");
+        expectedNames.add("China");
+        expectedNames.add("India");
+        expectedNames.add("Japan");
+        expectedNames.add("Malaysia");
+        expectedNames.add("Singapore");
+        System.out.println(expectedNames);
+
+        List<String> actualNames = jsonPath.getList("items.country_name");
+        System.out.println(actualNames);
+
+        assertEquals(actualNames,expectedNames);
     }
 }
