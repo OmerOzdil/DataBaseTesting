@@ -34,5 +34,4 @@ public class HrPostDemo {
                 .body("region_id",is(25));
     }
 
-
 }
